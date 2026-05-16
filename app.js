@@ -68,6 +68,15 @@ function switchTab(idx) {
     page.classList.toggle('active', i === idx);
   });
 
+  if (idx === GLOBAL_TAB_IDX) {
+    // 全章検索タブ: フォーカスだけ当てて再描画
+    setTimeout(() => {
+      const input = document.getElementById('global-search-input');
+      if (input) { input.focus(); }
+    }, 50);
+    return;
+  }
+
   // Reset search input and filter
   const input = document.getElementById(`search-${idx}`);
   const sel = document.getElementById(`filter-${idx}`);
@@ -275,7 +284,7 @@ function attachCardEvents(id) {
   // textarea autosave already wired via oninput in HTML
 }
 
-/* ---- Search & Filter ---- */
+/* ---- Search & Filter (per-tab) ---- */
 function onSearch(idx, val) {
   if (idx !== currentTab) return;
   searchQuery = val;
@@ -288,10 +297,86 @@ function onFilter(idx, val) {
   renderPage(idx);
 }
 
+/* ---- Global Search ---- */
+const GLOBAL_TAB_IDX = TABS.length; // index 4
+
+function onGlobalSearch(val) {
+  renderGlobalSearch(val.trim());
+}
+
+function onGlobalFilter(val) {
+  const query = document.getElementById('global-search-input')?.value.trim() || '';
+  renderGlobalSearch(query, val);
+}
+
+function renderGlobalSearch(query, filter) {
+  filter = filter || document.getElementById('global-filter-select')?.value || 'all';
+  const countEl   = document.getElementById('global-count');
+  const container = document.getElementById('global-list');
+  if (!container) return;
+
+  // ヒット件数ゼロ or 空クエリ時
+  if (!query && filter === 'all') {
+    container.innerHTML = '<div class="empty-state">🔍 薬剤名や番号を入力してください</div>';
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+
+  let results = drugsData.filter(d => {
+    const q = query.toLowerCase();
+    const matchText = !query ||
+      d.name.toLowerCase().includes(q) ||
+      String(d.id).includes(q);
+
+    const n = getNoteFor(d.id);
+    const matchFilter =
+      filter === 'all'        ? true :
+      filter === 'complete'   ? n.complete :
+      filter === 'incomplete' ? !n.complete : true;
+
+    return matchText && matchFilter;
+  });
+
+  if (countEl) countEl.textContent = `${results.length} 件ヒット`;
+
+  if (results.length === 0) {
+    container.innerHTML = '<div class="empty-state">😔 該当する薬剤が見つかりません</div>';
+    return;
+  }
+
+  // 章ラベルを挿入しながらレンダリング
+  let html = '';
+  let lastChapter = -1;
+  results.forEach(d => {
+    const chapterIdx = TABS.findIndex(t => d.id >= t.range[0] && d.id <= t.range[1]);
+    if (chapterIdx !== lastChapter) {
+      const tab = TABS[chapterIdx];
+      html += `<div class="global-chapter-label">${tab.label}（${tab.title}）</div>`;
+      lastChapter = chapterIdx;
+    }
+    html += buildCardHTML(d);
+  });
+
+  container.innerHTML = html;
+  results.forEach(d => attachCardEvents(d.id));
+
+  // クエリをハイライト
+  if (query) highlightMatches(container, query);
+}
+
+function highlightMatches(container, query) {
+  const q = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`(${q})`, 'gi');
+  container.querySelectorAll('.card-name').forEach(el => {
+    el.innerHTML = el.textContent.replace(re, '<mark class="hl">$1</mark>');
+  });
+}
+
 /* ---- Build Static Structure ---- */
 function buildUI() {
-  // Tab buttons
   const tabNav = document.getElementById('tab-nav');
+
+  // 章タブ（1〜4）
   TABS.forEach((tab, i) => {
     const btn = document.createElement('button');
     btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
@@ -300,8 +385,16 @@ function buildUI() {
     tabNav.appendChild(btn);
   });
 
-  // Pages
+  // 全章検索タブ
+  const globalBtn = document.createElement('button');
+  globalBtn.className = 'tab-btn tab-btn-global';
+  globalBtn.innerHTML = `🔍 全章検索`;
+  globalBtn.addEventListener('click', () => switchTab(GLOBAL_TAB_IDX));
+  tabNav.appendChild(globalBtn);
+
   const pagesWrap = document.getElementById('pages-wrap');
+
+  // 章ページ（1〜4）
   TABS.forEach((tab, i) => {
     const page = document.createElement('div');
     page.className = 'tab-page' + (i === 0 ? ' active' : '');
@@ -331,6 +424,38 @@ function buildUI() {
     `;
     pagesWrap.appendChild(page);
   });
+
+  // 全章検索ページ
+  const globalPage = document.createElement('div');
+  globalPage.className = 'tab-page';
+  globalPage.id = `page-${GLOBAL_TAB_IDX}`;
+  globalPage.innerHTML = `
+    <div class="page-header">
+      <span class="page-title">🔍 全章横断検索</span>
+      <span class="page-count" id="global-count"></span>
+    </div>
+    <div class="controls">
+      <div class="search-wrap" style="flex:2">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="global-search-input"
+          placeholder="1〜120番すべての薬剤名・番号で検索…"
+          oninput="onGlobalSearch(this.value)"
+          autofocus
+        />
+      </div>
+      <select class="filter-select" id="global-filter-select" onchange="onGlobalFilter(this.value)">
+        <option value="all">すべて表示</option>
+        <option value="complete">完了のみ</option>
+        <option value="incomplete">未完了のみ</option>
+      </select>
+    </div>
+    <div class="drug-list" id="global-list">
+      <div class="empty-state">🔍 薬剤名や番号を入力してください</div>
+    </div>
+  `;
+  pagesWrap.appendChild(globalPage);
 }
 
 /* ---- Utility ---- */
