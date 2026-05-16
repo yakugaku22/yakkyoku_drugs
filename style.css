@@ -516,9 +516,46 @@ main {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ==============================
-   PDF出力ボタン（ヘッダー）
-   ============================== */
+/* ---- 全章検索タブ ---- */
+.tab-btn-global {
+  margin-left: auto;
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+}
+.tab-btn-global:hover {
+  background: var(--accent-pale);
+  border-radius: 8px 8px 0 0;
+}
+.tab-btn-global.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* 章ラベル（全章検索内） */
+.global-chapter-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 4px 6px;
+  border-bottom: 1.5px solid var(--accent-pale);
+  margin-bottom: 6px;
+}
+.global-chapter-label:first-child {
+  padding-top: 4px;
+}
+
+/* 検索ハイライト */
+mark.hl {
+  background: #fff176;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+
 .btn-print-open {
   padding: 8px 18px;
   background: rgba(255,255,255,0.15);
