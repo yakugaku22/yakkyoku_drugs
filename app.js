@@ -30,7 +30,7 @@ function saveNotes() {
 }
 
 function getNoteFor(id) {
-  return notes[id] || { mechanism: '', effect: '', memo: '', complete: false };
+  return notes[id] || { mechanism: '', effect: '', dosage: '', generic: '', memo: '', complete: false };
 }
 
 /* ---- Progress ---- */
@@ -132,10 +132,10 @@ function renderPage(idx) {
 /* ---- Build Card HTML ---- */
 function buildCardHTML(drug) {
   const n = getNoteFor(drug.id);
-  const hasNotes = n.mechanism || n.effect || n.memo;
-  const compClass  = n.complete  ? 'complete'   : '';
-  const notesClass = hasNotes    ? 'has-notes'  : '';
-  const checkIcon  = n.complete  ? '✓'          : '';
+  const hasNotes = n.mechanism || n.effect || n.dosage || n.generic || n.memo;
+  const compClass  = n.complete ? 'complete'  : '';
+  const notesClass = hasNotes   ? 'has-notes' : '';
+  const checkIcon  = n.complete ? '✓'         : '';
 
   return `
 <div class="drug-card ${compClass} ${notesClass}" id="card-${drug.id}">
@@ -148,6 +148,24 @@ function buildCardHTML(drug) {
   </div>
   <div class="card-body">
     <div class="note-grid">
+      <div class="note-field">
+        <label class="note-label"><span class="label-icon">🏷️</span> 一般名（商品名）</label>
+        <textarea
+          id="generic-${drug.id}"
+          placeholder="例）アムロジピンベシル酸塩（アムロジン）"
+          oninput="onFieldInput(${drug.id})"
+          rows="2"
+        >${escHtml(n.generic)}</textarea>
+      </div>
+      <div class="note-field">
+        <label class="note-label"><span class="label-icon">📏</span> 用法・用量</label>
+        <textarea
+          id="dosage-${drug.id}"
+          placeholder="例）1回5mg、1日1回 食後服用"
+          oninput="onFieldInput(${drug.id})"
+          rows="2"
+        >${escHtml(n.dosage)}</textarea>
+      </div>
       <div class="note-field">
         <label class="note-label"><span class="label-icon">⚙️</span> 作用機序</label>
         <textarea
@@ -221,10 +239,12 @@ function manualSave(id) {
 function writeNote(id) {
   const mechanism = (document.getElementById(`mech-${id}`)?.value   || '').trim();
   const effect    = (document.getElementById(`effect-${id}`)?.value || '').trim();
+  const dosage    = (document.getElementById(`dosage-${id}`)?.value || '').trim();
+  const generic   = (document.getElementById(`generic-${id}`)?.value || '').trim();
   const memo      = (document.getElementById(`memo-${id}`)?.value   || '').trim();
   const prev      = getNoteFor(id);
 
-  notes[id] = { mechanism, effect, memo, complete: prev.complete };
+  notes[id] = { mechanism, effect, dosage, generic, memo, complete: prev.complete };
   saveNotes();
 }
 
@@ -593,6 +613,8 @@ function buildPrintCard(drug) {
         ${completeTag}
       </div>
       <div class="print-card-body">
+        ${row('🏷️', '一般名（商品名）', n.generic)}
+        ${row('📏', '用法・用量', n.dosage)}
         ${row('⚙️', '作用機序', n.mechanism)}
         ${row('💊', '効果・効能', n.effect)}
         ${row('📝', 'メモ・注意点', n.memo)}
