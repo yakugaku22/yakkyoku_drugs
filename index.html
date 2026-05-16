@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>薬剤学習ノート｜薬局実習</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header>
+    <div>
+      <div class="logo">💊 薬剤学習ノート</div>
+      <div class="subtitle">薬局実習 — 作用機序・効能メモ帳</div>
+    </div>
+    <div class="header-right">
+      <div class="progress-wrap">
+        <span class="progress-label" id="progress-label">0 / 120 記入済み</span>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="btn-print-open" onclick="openPrintModal()">🖨️ PDF出力</button>
+    </div>
+  </header>
+
+  <!-- ========== PRINT MODAL ========== -->
+  <div id="print-modal" class="modal-overlay" onclick="closePrintModal(event)">
+    <div class="modal-box">
+      <div class="modal-title">🖨️ PDF出力設定</div>
+      <p class="modal-desc">出力する範囲を選んでください。印刷ダイアログが開いたら「送信先」を <strong>PDFとして保存</strong> に設定してください。</p>
+      <div class="modal-options">
+        <label class="modal-option">
+          <input type="radio" name="print-range" value="filled" checked />
+          <div class="option-content">
+            <span class="option-icon">✏️</span>
+            <div>
+              <div class="option-label">記入済みの薬だけ</div>
+              <div class="option-desc">作用機序・効能・メモのいずれかが入力されている薬のみ</div>
+            </div>
+          </div>
+        </label>
+        <label class="modal-option">
+          <input type="radio" name="print-range" value="all" />
+          <div class="option-content">
+            <span class="option-icon">📋</span>
+            <div>
+              <div class="option-label">全120種類（空欄含む）</div>
+              <div class="option-desc">全薬剤を一覧出力。空欄は手書き記入スペースとしても使えます</div>
+            </div>
+          </div>
+        </label>
+        <label class="modal-option">
+          <input type="radio" name="print-range" value="tab" />
+          <div class="option-content">
+            <span class="option-icon">📑</span>
+            <div>
+              <div class="option-label">現在のタブのみ</div>
+              <div class="option-desc">今開いているページ（30種類）だけ出力</div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closePrintModal()">キャンセル</button>
+        <button class="btn-modal-print" onclick="executePrint()">🖨️ 印刷ダイアログを開く</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PRINT FRAME (hidden) ========== -->
+  <div id="print-area" class="print-area"></div>
+
+  <!-- ========== TAB NAVIGATION ========== -->
+  <nav class="tab-nav" id="tab-nav">
+    <!-- Tabs injected by app.js -->
+  </nav>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main>
+    <div id="pages-wrap">
+      <!-- Pages injected by app.js -->
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

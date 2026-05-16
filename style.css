@@ -1,0 +1,825 @@
+/* ===========================
+   薬剤学習ノート - style.css
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  --bg:          #f5f3ee;
+  --surface:     #ffffff;
+  --surface-alt: #faf9f6;
+  --border:      #e2ddd6;
+  --accent:      #2d6a4f;
+  --accent-soft: #52b788;
+  --accent-pale: #d8f3dc;
+  --tag-bg:      #e9f5db;
+  --text-primary:#1a1a1a;
+  --text-sub:    #6b6460;
+  --text-muted:  #9d9893;
+  --danger:      #c0392b;
+  --warn:        #e67e22;
+  --saved:       #27ae60;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.1);
+  --radius:      10px;
+  --transition:  0.18s ease;
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ---- Header ---- */
+header {
+  background: var(--accent);
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(45,106,79,0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+header .subtitle {
+  font-size: 12px;
+  opacity: 0.75;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.progress-label {
+  font-size: 11px;
+  opacity: 0.8;
+  font-family: 'DM Mono', monospace;
+}
+
+.progress-bar-bg {
+  width: 140px;
+  height: 6px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-soft);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ---- Tab Navigation ---- */
+.tab-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  gap: 4px;
+  position: sticky;
+  top: 65px;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-btn {
+  padding: 14px 24px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sub);
+  border-bottom: 3px solid transparent;
+  transition: all var(--transition);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn:hover {
+  color: var(--accent);
+  background: var(--accent-pale);
+  border-radius: 8px 8px 0 0;
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+.tab-badge {
+  background: var(--accent-pale);
+  color: var(--accent);
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.tab-btn.active .tab-badge {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---- Main Content ---- */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* ---- Tab Pages ---- */
+.tab-page { display: none; }
+.tab-page.active { display: block; }
+
+/* ---- Search & Controls ---- */
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: border var(--transition);
+}
+
+.search-wrap input:focus {
+  outline: none;
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+}
+
+.search-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 15px;
+}
+
+.filter-select {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: border var(--transition);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent-soft);
+}
+
+/* ---- Drug Cards ---- */
+.drug-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drug-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.drug-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #c8d9cc;
+}
+
+.drug-card.has-notes {
+  border-left: 4px solid var(--accent-soft);
+}
+
+.drug-card.complete {
+  border-left: 4px solid var(--accent);
+  background: #fcfffe;
+}
+
+/* Card Header (clickable) */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  gap: 14px;
+}
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  min-width: 28px;
+  text-align: right;
+}
+
+.card-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.card-unit {
+  font-size: 11px;
+  background: var(--tag-bg);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+}
+
+.card-status {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: transparent;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.drug-card.complete .card-status {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.card-chevron {
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.drug-card.expanded .card-chevron {
+  transform: rotate(180deg);
+}
+
+/* Card Body */
+.card-body {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 18px 18px 16px;
+  background: var(--surface-alt);
+}
+
+.drug-card.expanded .card-body {
+  display: block;
+}
+
+/* Note Fields */
+.note-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 640px) {
+  .note-grid { grid-template-columns: 1fr; }
+}
+
+.note-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.note-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.note-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-sub);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.note-label .label-icon {
+  font-size: 13px;
+}
+
+.note-field textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  background: var(--surface);
+  resize: vertical;
+  transition: border var(--transition);
+}
+
+.note-field textarea::placeholder {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.note-field textarea:focus {
+  outline: none;
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px rgba(82,183,136,0.12);
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.save-status {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-muted);
+  height: 16px;
+}
+
+.save-status.saved   { color: var(--saved); }
+.save-status.saving  { color: var(--warn); }
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all var(--transition);
+}
+
+.btn-save {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-save:hover { background: #235c42; }
+
+.btn-clear {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--text-sub);
+}
+
+.btn-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: #fdf0ee;
+}
+
+.btn-complete {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.drug-card.complete .btn-complete {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-pale);
+}
+
+.btn-complete:hover { opacity: 0.8; }
+
+/* ---- Page Header ---- */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.page-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ---- Empty State ---- */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #c0b8af; }
+
+/* ---- Animations ---- */
+.drug-card { animation: fadeUp 0.2s ease both; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==============================
+   PDF出力ボタン（ヘッダー）
+   ============================== */
+.btn-print-open {
+  padding: 8px 18px;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition);
+}
+.btn-print-open:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+/* ==============================
+   印刷範囲選択モーダル
+   ============================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  width: min(480px, 92vw);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.modal-desc strong {
+  color: var(--accent);
+}
+
+.modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.modal-option {
+  display: block;
+  cursor: pointer;
+}
+
+.modal-option input[type="radio"] {
+  display: none;
+}
+
+.option-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  transition: all var(--transition);
+}
+
+.modal-option input:checked + .option-content {
+  border-color: var(--accent-soft);
+  background: var(--accent-pale);
+}
+
+.modal-option:hover .option-content {
+  border-color: #b0d4bc;
+  background: #f4fbf6;
+}
+
+.option-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.option-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.option-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-modal-cancel {
+  padding: 9px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-modal-cancel:hover {
+  border-color: #aaa;
+  color: var(--text-primary);
+}
+
+.btn-modal-print {
+  padding: 9px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.btn-modal-print:hover {
+  background: #235c42;
+}
+
+/* ==============================
+   印刷エリア（画面では非表示）
+   ============================== */
+.print-area {
+  display: none;
+}
+
+/* ==============================
+   @media print — 印刷時スタイル
+   ============================== */
+@media print {
+  /* 通常UIを全非表示 */
+  header, nav, main, .modal-overlay { display: none !important; }
+
+  /* 印刷エリアだけ表示 */
+  .print-area {
+    display: block !important;
+  }
+
+  body {
+    background: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11pt;
+    color: #111;
+  }
+
+  .print-page {
+    page-break-after: always;
+    padding: 16mm 14mm;
+  }
+  .print-page:last-child {
+    page-break-after: avoid;
+  }
+
+  .print-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid #2d6a4f;
+    padding-bottom: 6pt;
+    margin-bottom: 12pt;
+  }
+
+  .print-title {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #2d6a4f;
+  }
+
+  .print-meta {
+    font-size: 8pt;
+    color: #888;
+  }
+
+  /* カード */
+  .print-card {
+    border: 1px solid #ddd;
+    border-radius: 6pt;
+    margin-bottom: 8pt;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+
+  .print-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8pt;
+    background: #f0f7f2;
+    padding: 5pt 10pt;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .print-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9pt;
+    color: #888;
+    min-width: 22pt;
+    text-align: right;
+  }
+
+  .print-name {
+    font-size: 11pt;
+    font-weight: 600;
+    flex: 1;
+    color: #1a1a1a;
+  }
+
+  .print-unit {
+    font-size: 8pt;
+    background: #d8f3dc;
+    color: #2d6a4f;
+    padding: 1pt 5pt;
+    border-radius: 99pt;
+    font-weight: 600;
+  }
+
+  .print-complete-tag {
+    font-size: 8pt;
+    background: #2d6a4f;
+    color: #fff;
+    padding: 1pt 6pt;
+    border-radius: 99pt;
+    font-weight: 700;
+  }
+
+  .print-card-body {
+    padding: 6pt 10pt;
+  }
+
+  .print-row {
+    display: flex;
+    gap: 8pt;
+    padding: 4pt 0;
+    border-bottom: 1px dotted #e0e0e0;
+    font-size: 10pt;
+    line-height: 1.6;
+  }
+  .print-row:last-child {
+    border-bottom: none;
+  }
+
+  .print-row-label {
+    min-width: 80pt;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #555;
+    flex-shrink: 0;
+    padding-top: 1pt;
+  }
+
+  .print-row-val {
+    flex: 1;
+    white-space: pre-wrap;
+    color: #1a1a1a;
+  }
+
+  .print-blank {
+    min-height: 18pt;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .print-row.empty .print-row-label {
+    color: #aaa;
+  }
+}
